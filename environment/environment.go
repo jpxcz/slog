@@ -1,4 +1,4 @@
-package file_parser
+package environment
 
 import (
 	"encoding/json"
@@ -8,12 +8,17 @@ import (
 )
 
 type Environments struct {
-	Environments []Environment `json:"enviroments"`
+	Kubernetes []EnvKubernetes `json:"kubernetes"`
+	Docker     []EnvDocker     `json:"docker"`
 }
 
-type Environment struct {
+type EnvKubernetes struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
+}
+
+type EnvDocker struct {
+	Name string `json:"name"`
 }
 
 func openJson(fileName string) (*os.File, error) {
@@ -39,7 +44,9 @@ func unmarshallJSON(file *os.File) (*Environments, error) {
 	return &envs, nil
 }
 
-func GetSystems() ([]Environment, error) {
+// GetEnvironments will return the saved environments that we
+// have saved
+func GetEnvironments() (*Environments, error) {
 	f, err := openJson("environments.json")
 	if err != nil {
 		return nil, err
@@ -50,5 +57,5 @@ func GetSystems() ([]Environment, error) {
 		return nil, err
 	}
 
-	return envs.Environments, err
+	return envs, err
 }
