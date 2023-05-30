@@ -3,6 +3,7 @@ package tui
 import (
 	"fmt"
 	"io"
+	"slog/commands"
 	"slog/environment"
 	"strings"
 
@@ -61,7 +62,7 @@ func createEnvironmentList() []list.Item {
 	return items
 }
 
-func newModel(envs *environment.Environments) model {
+func newModel(envs environment.Environments) model {
 	envList := list.New(createEnvironmentList(), itemDelegate{}, defaultWidth, listHeight)
 	envList.Title = "Select an environment"
 	envList.SetShowStatusBar(false)
@@ -130,7 +131,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				i, ok := m.environmentList.SelectedItem().(Item)
 				if ok {
 					m.environmentSelected = i.FilterValue()
-					// commands.RunShellCommand()
 					m.selectedView = tui_k8s_cluster
 				}
 				return m, nil
@@ -151,7 +151,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				i, ok := m.clusterList.SelectedItem().(Item)
 				if ok {
 					m.clusterSelected = i.FilterValue()
-					m.selectedView = tui_k8s_cluster
+					c, ok := environment.Environment.Kubernetes[m.clusterSelected]
+					if ok {
+						output := commands.RunShellCommand(c.Cmd)
+						fmt.Printf("output %s", string(output))
+
+						// m.selectedView = tui_k8s_namespace
+					}
 				}
 				return m, nil
 			}

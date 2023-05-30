@@ -7,6 +7,8 @@ import (
 	"os/user"
 )
 
+var Environment Environments
+
 type Environments struct {
 	Kubernetes map[string]KubernetesOptions `json:"kubernetes"`
 	// Docker     []EnvDocker                  `json:"docker"`
@@ -32,29 +34,30 @@ func openJson(fileName string) (*os.File, error) {
 
 }
 
-func unmarshallJSON(file *os.File) (*Environments, error) {
+func unmarshallJSON(file *os.File) (Environments, error) {
 	byteValue, err := io.ReadAll(file)
+	var envs Environments
 	if err != nil {
-		return nil, err
+		return envs, err
 	}
 
-	var envs Environments
 	json.Unmarshal(byteValue, &envs)
-	return &envs, nil
+	return envs, nil
 }
 
 // GetEnvironments will return the saved environments that we
 // have saved
-func GetEnvironments() (*Environments, error) {
+func GetEnvironments() (Environments, error) {
 	f, err := openJson("environments.json")
 	if err != nil {
-		return nil, err
+		return Environment, err
 	}
 
 	envs, err := unmarshallJSON(f)
 	if err != nil {
-		return nil, err
+		return Environment, err
 	}
 
-	return envs, err
+	Environment = envs
+	return Environment, err
 }

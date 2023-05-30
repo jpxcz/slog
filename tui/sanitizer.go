@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 )
 
-func GetKs(envs *environment.Environments) []list.Item {
+func GetKs(envs environment.Environments) []list.Item {
 	items := []list.Item{}
 	for k, _ := range envs.Kubernetes {
 		items = append(items, Item(k))
