@@ -13,6 +13,7 @@ import (
 const (
 	tui_env = iota
 	tui_k8s_cluster
+	tui_k8s_namespace
 	tui_grepper
 	Kubernetes = "Kubernetes"
 	Docker     = "Docker"
@@ -129,6 +130,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				i, ok := m.environmentList.SelectedItem().(Item)
 				if ok {
 					m.environmentSelected = i.FilterValue()
+					// commands.RunShellCommand()
 					m.selectedView = tui_k8s_cluster
 				}
 				return m, nil

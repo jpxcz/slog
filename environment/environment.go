@@ -8,18 +8,17 @@ import (
 )
 
 type Environments struct {
-	Kubernetes []EnvKubernetes `json:"kubernetes"`
-	Docker     []EnvDocker     `json:"docker"`
+	Kubernetes map[string]KubernetesOptions `json:"kubernetes"`
+	// Docker     []EnvDocker                  `json:"docker"`
 }
 
-type EnvKubernetes struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
+type KubernetesOptions struct {
+	Cmd string `json:"cmd"`
 }
 
-type EnvDocker struct {
-	Name string `json:"name"`
-}
+// type EnvDocker struct {
+// 	Name string `json:"name"`
+// }
 
 func openJson(fileName string) (*os.File, error) {
 	currentUser, err := user.Current()
